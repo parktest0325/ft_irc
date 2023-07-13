@@ -8,8 +8,9 @@ class Server
 {
 public:
 	Server(const std::string _port, const std::string _password)
-		: port(stoi(_port)), password(_password), listenQueueSize(10), socket(0)
+		: port(stoi(_port)), password(_password), sock(0)
 	{
+		// 积己磊 抗寇贸府
 		Init();
 	};
 	~Server()
@@ -17,20 +18,20 @@ public:
 		Release();
 	};
 
-	void Init();
-	void Release();
 	void Listen();
 	void Run();
+
 private:
+	void Init();
+	void Release();
+	void Error(const std::string cur_method, const std::string position);
 
-	int	port;
-	int listenQueueSize;
-	std::string password;
-	SOCKET sock;
+private:
+	static constexpr int MaxConn = 10;
 
-	
+	SOCKET			sock;
 
-
-
+	int				port;
+	std::string		password;
 };
 

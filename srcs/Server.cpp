@@ -10,11 +10,24 @@ void Server::Init()
 	WSADATA wsaData;
 	if (WSAStartup(MAKEWORD(2, 2), &wsaData))
 	{
-		throw std::exception("[Fail] Server::Init() => Failed to listen");
+		return Error("Init", "WSAStartup()");
 	}
 
 	sock = socket(AF_INET, SOCK_STREAM, 0);
+	if (sock == INVALID_SOCKET)
+	{
+		return Error("Init", "socket()");
+	}
+}
 
+void Server::Release()
+{
+	closesocket(sock);
+	WSACleanup();
+}
+
+void Server::Listen()
+{
 	sockaddr_in serverAddr;
 	serverAddr.sin_family = AF_INET;
 	serverAddr.sin_port = htons(port);
@@ -22,18 +35,23 @@ void Server::Init()
 
 	if (bind(sock, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR)
 	{
-		throw std::exception("[Fail] Server::Init() => Failed to bind");
+		return Error("Listen", "bind()");
 	}
-}
 
-void Server::Release()
-{
-}
-
-void Server::Listen()
-{
+	if (listen(sock, Server::MaxConn) == SOCKET_ERROR)
+	{
+		return Error("Listen", "listen()");
+	}
 }
 
 void Server::Run()
 {
 }
+
+void Server::Error(const std::string cur_method, const std::string position)
+{
+	Release();
+	std::cerr << "[Fail] Server:: " << cur_method << " => " << position << std::endl;
+	return;
+}
+
