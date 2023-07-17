@@ -14,8 +14,8 @@ public:
 	static constexpr size_t	MsgBufferSize = 1024;
 
 public:
-	Server(const std::string _port, const std::string _password)
-		: mServerFd(0), mPort(stoi(_port)), mPassword(_password)
+	Server()
+		: mServerFd(0), mPort({}), mPassword({})
 	{
 		Init();
 	};
@@ -24,8 +24,8 @@ public:
 		Release();
 	};
 
-	void Listen();
-	void Run();
+	void Listen(const std::string _port);
+	void Run(const std::string _password);
 
 protected:
 	virtual void Execute(SOCKET _sender, std::string& _msg);
@@ -41,7 +41,7 @@ private:
 
 private:
 	SOCKET			mServerFd;
-	int				mPort;
+	std::string		mPort;
 	std::string		mPassword;
 
 	std::map<SOCKET, Client*>		mClients;	// 연결 끊길때를 생각해서 map으로 구현

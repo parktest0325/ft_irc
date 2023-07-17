@@ -30,11 +30,13 @@ void Server::Release()
 	WSACleanup();
 }
 
-void Server::Listen()
+void Server::Listen(const std::string _port)
 {
+	mPort = _port;
+
 	sockaddr_in serverAddr;
 	serverAddr.sin_family = AF_INET;
-	serverAddr.sin_port = htons(mPort);
+	serverAddr.sin_port = htons(stoi(mPort));
 	serverAddr.sin_addr.S_un.S_addr = INADDR_ANY;
 
 	if (bind(mServerFd, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR)
@@ -86,8 +88,10 @@ void Server::Execute(SOCKET _sender, std::string& _msg)
 	}
 }
 
-void Server::Run()
+void Server::Run(const std::string _password)
 {
+	mPassword = _password;
+
 	FD_SET fds, copyFds;
 	SOCKET curFd, acceptFd;
 

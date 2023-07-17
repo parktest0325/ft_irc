@@ -9,8 +9,8 @@ int main(int argc, char* argv[])
 	port = argc < 2 ? "4321" : argv[1];
 	password = argc < 3 ? "4321" : argv[2];
 
-	Server s(port, password);
-	s.Listen();
-	s.Run();
+	Server s;
+	s.Listen(port);
+	s.Run(password);
 	return 0;
 }
