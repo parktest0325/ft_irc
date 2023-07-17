@@ -62,7 +62,6 @@ SOCKET Server::AcceptClient()
 		PrintError("AcceptClient", "accept()");
 		return -1;
 	}
-
 	mClients.insert(std::make_pair(clientFd, new Client(clientFd)));
 	return clientFd;
 }
@@ -83,8 +82,9 @@ void Server::Execute(SOCKET _sender, std::string& _msg)
 		it != mClients.end(); ++it)
 	{
 		target = it->second->GetFd();
-		if (target != _sender)
-			send(target, _msg.c_str(), _msg.size(), NULL);
+		// if (target != _sender)
+		send(target, _msg.c_str(), _msg.size(), NULL);
+		std::cout << _msg << std::endl;
 	}
 }
 
@@ -130,8 +130,6 @@ void Server::Run(const std::string _password)
 					PrintError("recvSize", " == 0");	// Ctrl+C
 				else
 					Execute(curFd, mMsgQueue[curFd]);
-
-				
 			}
 		}
 	}
