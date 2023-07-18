@@ -78,11 +78,12 @@ void Server::ClientsCleanup()
 void Server::Execute(SOCKET _sender, std::string& _msg)
 {
 	SOCKET target;
+
 	for (std::map<SOCKET, Client*>::iterator it = mClients.begin();
 		it != mClients.end(); ++it)
 	{
 		target = it->second->GetFd();
-		// if (target != _sender)
+		// if (target != _sender)	// 자기 자신을 제외하고
 		send(target, _msg.c_str(), _msg.size(), NULL);
 		std::cout << _msg << std::endl;
 	}
@@ -115,26 +116,36 @@ void Server::Run(const std::string _password)
 			{
 				// 개행이 입력될때까지 데이터 추가
 				int recvSize;
-				recvSize = recv(curFd, mMsgBuffer, Server::MsgBufferSize, NULL);
 
-				//do
-				//{
-				//	recvSize = recv(curFd, mMsgBuffer, Server::MsgBufferSize, NULL);
-				//} while (recvSize == Server::MsgBufferSize);
+				recvSize = recv(curFd, mMsgBuffer, Server::MsgBufferSize - 1, NULL);
 
-				mMsgQueue[curFd].assign(mMsgBuffer);
-
-				if (recvSize < 0)
-					PrintError("recvSize", " < 0");	// Error;
-				else if (recvSize == 0)
-					PrintError("recvSize", " == 0");	// Ctrl+C
+				if (recvSize <= 0)
+				{
+					PrintError("recvSize", " <= 0");
+					DeleteClient(curFd);
+					FD_CLR(curFd, &fds);
+				}
 				else
-					Execute(curFd, mMsgQueue[curFd]);
+				{
+					mMsgBuffer[recvSize] = '\0';
+					mMsgQueue[curFd].append(mMsgBuffer);
+					if (mMsgQueue[curFd].back() == '\n')
+					{
+						Execute(curFd, mMsgQueue[curFd]);
+						mMsgQueue[curFd].clear();
+					}
+				}
 			}
 		}
 	}
 }
 
+void Server::DeleteClient(SOCKET _curFd)
+{
+	delete mClients[_curFd];
+	mClients.erase(_curFd);
+	mMsgQueue.erase(_curFd);
+}
 
 void Server::Error(const std::string _curMethod, const std::string _position)
 {

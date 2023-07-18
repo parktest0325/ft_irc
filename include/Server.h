@@ -27,6 +27,8 @@ public:
 	void Listen(const std::string _port);
 	void Run(const std::string _password);
 
+	void DeleteClient(SOCKET _curFd);
+
 protected:
 	virtual void Execute(SOCKET _sender, std::string& _msg);
 
