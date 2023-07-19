@@ -23,6 +23,10 @@ https://datatracker.ietf.org/doc/html/rfc1459
 - 다른 사람이 구현한 채팅서버와 연결할 수 있어야 한다.
 - 클라이언트의 정보를 가지고 있으며, 다른서버의 클라이언트에 메시지를 전달할때 서버가 중계해준다. (라우팅 테이블같은 느낌)
 
+### Client
+- 서버에 연결된 클라이언트
+- 최대 9자리의 유니크한 닉네임을 가지고 있다.
+
 ### Operator
 - 서버의 운영자이다.
 - 서버를 종료할 수 있고, 다른 서버와 연결할 수 있는 기능이 있다.
@@ -46,4 +50,14 @@ https://datatracker.ietf.org/doc/html/rfc1459
 <br>
 
 ## 명령어
+### PASS
+`PASS [secretpassword]`
+서버는 선택적으로 PASSWORD가 설정되어있고, PASSWORD가 설정되어있다면 클라이언트가 연결할때 어떤 명령보다도 가장먼저 실행되어야 한다. 
+Replies:
+    ERR_NEEDMOREPARAMS              ERR_ALREADYREGISTRED
 
+
+### NICK
+Numeric Replies:
+   ERR_NONICKNAMEGIVEN             ERR_ERRONEUSNICKNAME
+   ERR_NICKNAMEINUSE               ERR_NICKCOLLISION
