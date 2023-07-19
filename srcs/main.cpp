@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../include/Server.h"
+#include "../include/IrcServer.h"
 
 int main(int argc, char* argv[])
 {
@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
 	port = argc < 2 ? "4321" : argv[1];
 	password = argc < 3 ? "4321" : argv[2];
 
-	Server s;
+	IrcServer s;
 	s.Listen(port);
 	s.Run();
 	return 0;
