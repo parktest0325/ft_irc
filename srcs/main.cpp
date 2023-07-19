@@ -11,6 +11,6 @@ int main(int argc, char* argv[])
 
 	Server s;
 	s.Listen(port);
-	s.Run(password);
+	s.Run();
 	return 0;
 }

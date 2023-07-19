@@ -78,21 +78,21 @@ void Server::ClientsCleanup()
 void Server::Execute(SOCKET _sender, std::string& _msg)
 {
 	SOCKET target;
+	std::string sendMessage;
 
 	for (std::map<SOCKET, Client*>::iterator it = mClients.begin();
 		it != mClients.end(); ++it)
 	{
 		target = it->second->GetFd();
 		// if (target != _sender)	// 자기 자신을 제외하고
-		send(target, _msg.c_str(), _msg.size(), NULL);
-		std::cout << _msg << std::endl;
+		sendMessage = std::to_string(_sender) + ": " + _msg;
+		send(target, sendMessage.c_str(), sendMessage.size(), NULL);
+		std::cout << sendMessage << std::endl;
 	}
 }
 
-void Server::Run(const std::string _password)
+void Server::Run()
 {
-	mPassword = _password;
-
 	FD_SET fds, copyFds;
 	SOCKET curFd, acceptFd;
 

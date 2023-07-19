@@ -15,7 +15,7 @@ public:
 
 public:
 	Server()
-		: mServerFd(0), mPort({}), mPassword({})
+		: mServerFd(0), mPort({})
 	{
 		Init();
 	};
@@ -25,7 +25,7 @@ public:
 	};
 
 	void Listen(const std::string _port);
-	void Run(const std::string _password);
+	void Run();
 
 	void DeleteClient(SOCKET _curFd);
 
@@ -44,7 +44,6 @@ private:
 private:
 	SOCKET			mServerFd;
 	std::string		mPort;
-	std::string		mPassword;
 
 	std::map<SOCKET, Client*>		mClients;	// 연결 끊길때를 생각해서 map으로 구현
 	std::map<SOCKET, std::string>	mMsgQueue;	// 메시지가 개행까지 들어올때까지 저장
